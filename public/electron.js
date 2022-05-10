@@ -61,3 +61,53 @@ app.on('activate', () => {
     mainWindow = createWindow();
   }
 });
+
+// -----------------
+// Auto update stuff
+// -----------------
+function sendStatusToWindow(message) {
+  if (mainWindow) {
+    mainWindow.webContents.send('auto-update', message);
+  }
+}
+
+// https://www.electron.build/auto-update#event-checking-for-update
+autoUpdater.on('checking-for-update', () => {
+  sendStatusToWindow('Checking for update...');
+});
+
+// https://www.electron.build/auto-update#event-update-available
+// This is when you can prompt the user whether or not
+// he or she wants to update the app.
+autoUpdater.on('update-available', (info) => {
+  sendStatusToWindow('Update available');
+  log.info('SHOHEI@electron.js:71 ##### VAR: "info.version" =', info.version);
+  log.info(
+    'SHOHEI@electron.js:72 ##### VAR: "info.releaseDate" =',
+    info.releaseDate,
+  );
+});
+
+// https://www.electron.build/auto-update#event-update-not-available
+autoUpdater.on('update-not-available', (info) => {
+  sendStatusToWindow('Update not available');
+});
+
+// https://www.electron.build/auto-update#event-error
+autoUpdater.on('error', (err) => {
+  sendStatusToWindow(`Error in auto-updater: ${err.toString()}`);
+});
+
+// https://www.electron.build/auto-update#event-download-progress
+autoUpdater.on('download-progress', (downloadProgress) => {
+  const { bytesPerSecond, percent, transferred, total } = downloadProgress;
+  sendStatusToWindow(
+    `Download speed: ${bytesPerSecond} - Downloaded ${percent}% (${transferred} + '/' + ${total} + )`,
+  );
+});
+
+// https://www.electron.build/auto-update#event-update-downloaded
+autoUpdater.on('update-downloaded', (info) => {
+  sendStatusToWindow('Update downloaded; will install now');
+  autoUpdater.quitAndInstall();
+});

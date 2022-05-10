@@ -10,6 +10,11 @@ const API = {
       console.log(`Received "${message}" from main process.`);
     });
   },
+  listenForUpdate: () => {
+    ipcRenderer.on('auto-update', (_event, message) => {
+      alert(message);
+    });
+  },
 };
 
 contextBridge.exposeInMainWorld('api', API);
