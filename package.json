@@ -2,6 +2,9 @@
   "name": "public-repo",
   "version": "0.1.0",
   "private": true,
+  "author": "Shohei Jinno",
+  "repository": "https://github.com/sjinno/public-repo",
+  "homepage": "./",
   "main": "./public/electron.js",
   "dependencies": {
     "@testing-library/jest-dom": "^5.14.1",
@@ -20,7 +23,9 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "dev:electron": "concurrently 'BROWSER=none yarn start' 'wait-on http://localhost:3000 && electron .'"
+    "dev:electron": "concurrently 'BROWSER=none yarn start' 'wait-on http://localhost:3000 && electron .'",
+    "dist": "yarn build && electron-builder",
+    "release": "yarn build && electron-builder"
   },
   "eslintConfig": {
     "extends": [
@@ -45,5 +50,25 @@
     "electron": "^18.2.0",
     "electron-builder": "^23.0.3",
     "wait-on": "^6.0.1"
+  },
+  "build": {
+    "appId": "updater.public.example",
+    "mac": {
+      "target": [
+        "dmg",
+        "zip"
+      ]
+    },
+    "linux": {
+      "target": "AppImage"
+    },
+    "extraMetadata": {
+      "main": "./build/electron.js"
+    },
+    "publish": [
+      {
+        "provider": "github"
+      }
+    ]
   }
 }
